@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divine
+        <!-- Basic image tag -->
+<img src="C:\Users\admin\Downloads\IMG-20241125-WA0003.jpg" alt="Divine"> </title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        .product-card:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .wishlist-heart {
+            transition: color 0.3s ease;
+        }
+        .wishlist-heart:hover {
+            color: red;
+        }
+    </style>
+</head>
+<body x-data="{ 
+    cart: [], 
+    wishlist: [], 
+    products: [
+        { id: 1, name: 'Classic Denim Jacket', price: 89.99, image: '/api/placeholder/300/400', category: 'Jackets' },
+        { id: 2, name: 'Summer Linen Shirt', price: 49.99, image: '/api/placeholder/300/400', category: 'Shirts' },
+        { id: 3, name: 'Slim Fit Chinos', price: 69.99, image: '/api/placeholder/300/400', category: 'Pants' },
+        { id: 4, name: 'Vintage Graphic Tee', price: 29.99, image: '/api/placeholder/300/400', category: 'T-Shirts' }
+    ],
+    addToCart(product) {
+        const existingItem = this.cart.find(item => item.id === product.id);
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            this.cart.push({...product, quantity: 1});
+        }
+    },
+    addToWishlist(product) {
+        if (!this.wishlist.find(item => item.id === product.id)) {
+            this.wishlist.push(product);
+        }
+    },
+    removeFromWishlist(productId) {
+        this.wishlist = this.wishlist.filter(item => item.id !== productId);
+    }
+}" class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-800">StyleHub</h1>
+            <div class="flex space-x-4">
+                <button @click="window.scrollTo({top: document.getElementById('products').offsetTop, behavior: 'smooth'})" class="text-gray-600 hover:text-gray-900">Shop</button>
+                <button x-data="{ open: false }" @click="open = !open" class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <span x-show="cart.length > 0" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 py-1 text-xs">
+                        <span x-text="cart.length"></span>
+                    </span>
+                </button>
+                <button x-data="{ open: false }" @click="open = !open" class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    <span x-show="wishlist.length > 0" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 py-1 text-xs">
+                        <span x-text="wishlist.length"></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center py-20">
+        <h2 class="text-4xl font-bold mb-4">Discover Your Style</h2>
+        <p class="text-xl mb-8">Trendy Clothes, Unbeatable Prices</p>
+        <button @click="window.scrollTo({top: document.getElementById('products').offsetTop, behavior: 'smooth'})" 
+                class="bg-white text-blue-600 px-6 py-3 rounded-full hover:bg-gray-100 transition">
+            Shop Now
+        </button>
+    </header>
+
+    <!-- Product Grid -->
+    <section id="products" class="container mx-auto px-6 py-12">
+        <h3 class="text-3xl font-bold text-center mb-12">Our Latest Collection</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <template x-for="product in products" :key="product.id">
+                <div class="bg-white product-card rounded-lg shadow-md overflow-hidden relative">
+                    <img :src="product.image" :alt="product.name" class="w-full h-64 object-cover">
+                    <div class="p-4">
+                        <h4 x-text="product.name" class="font-semibold text-lg"></h4>
+                        <p x-text="`$${product.price.toFixed(2)}`" class="text-gray-600"></p>
+                        <div class="mt-4 flex justify-between">
+                            <button @click="addToCart(product)" 
+                                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                Add to Cart
+                            </button>
+                            <button @click="addToWishlist(product)" 
+                                    class="wishlist-heart text-gray-500 hover:text-red-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <!-- Wishlist Modal -->
+    <div x-show="wishlist.length > 0" class="fixed bottom-4 right-4 bg-white shadow-lg rounded-lg p-6 w-80">
+        <h4 class="text-xl font-bold mb-4">Your Wishlist</h4>
+        <template x-for="item in wishlist" :key="item.id">
+            <div class="flex justify-between items-center mb-2">
+                <span x-text="item.name" class="text-gray-800"></span>
+                <button @click="removeFromWishlist(item.id)" 
+                        class="text-red-500 hover:text-red-700">
+                    Remove
+                </button>
+            </div>
+        </template>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2024 StyleHub. All Rights Reserved.</p>
+            <div class="mt-4 space-x-4">
+                <a href="#" class="hover:text-gray-300">Privacy Policy</a>
+                <a href="#" class="hover:text-gray-300">Terms of Service</a>
+                <a href="#" class="hover:text-gray-300">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
